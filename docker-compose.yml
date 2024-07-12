@@ -1,0 +1,39 @@
+services:
+
+  laravel:
+    build:
+      context: docker/laravel
+    container_name: laravel-app
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: docker/nginx
+    container_name: nginx-app
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+
+  db:
+    image: mysql:5.7
+    container_name: db-app
+    tty: true
+    volumes:
+      - ./.mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=banco_dados
+      - MYSQL_ROOT_PASSWORD=password
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
